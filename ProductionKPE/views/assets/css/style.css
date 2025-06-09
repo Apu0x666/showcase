@@ -1,0 +1,30 @@
+#app .date-filter:hover {
+    background-color: transparent !important;
+    color: var(--white) !important;
+}
+
+#app .date-filter > div.tm-input-box {
+    display: flex;
+    align-items: center;
+}
+
+#app .date-filter > div.tm-input-box label {
+    margin-right: 10px;
+}
+
+
+.lossLog-table .bg-orange {
+    background-color: #FFC000;
+}
+
+.lossLog-table .bg-red {
+    background-color: #FF4B21;
+}
+
+.lossLog-table .bg-yellow {
+    background-color: yellow;
+}
+
+.lossLog-table th.center > div {
+    justify-content: center;
+}

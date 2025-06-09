@@ -1,0 +1,183 @@
+#error-text {
+    color: #cf0f0f;
+    font-size: 19px;
+    margin-top: 10px;
+}
+
+.lossLog-table .blue {
+    background-color: #ccffff;
+}
+
+.lossLog-table .green {
+    background-color: #ccffcc;
+}
+
+.lossLog-table {
+    text-align: center;
+}
+
+.lossLog-table .min-w-75 {
+    min-width: 75px;
+}
+
+.lossLog-table th.center > div {
+    justify-content: center;
+}
+
+.child-flex-bottom > .tm-input-box {
+    display: flex;
+    align-items: end;
+}
+
+.lossLog-table td.deltaPlan:has(div),
+.lossLog-table td.deltaFact:has(div),
+.lossLog-table td.decompositionPlanItems-deviation:has(div),
+.lossLog-table td.decompositionFactItems-deviation:has(div),
+.lossLog-table td.decompositionPlanItems-document:has(div),
+.lossLog-table td.decompositionFactItems-document:has(div) {
+    padding: 0;
+    position: relative;
+}
+
+.testSpan {
+    position: absolute;
+    font-size: 10px;
+    color: #5d2f2f;
+    margin-top: -50%;
+}
+
+.lossLog-table td.deltaPlan > div:has(p),
+.lossLog-table td.deltaFact > div:has(p),
+.lossLog-table td.deltaPlan > div,
+.lossLog-table td.deltaFact > div,
+.lossLog-table td.decompositionPlanItems-deviation > div:has(p),
+.lossLog-table td.decompositionFactItems-deviation > div:has(p),
+.lossLog-table td.decompositionPlanItems-deviation > div,
+.lossLog-table td.decompositionFactItems-deviation > div,
+.lossLog-table td.decompositionPlanItems-document > div:has(p),
+.lossLog-table td.decompositionFactItems-document > div:has(p),
+.lossLog-table td.decompositionPlanItems-document > div:has(a),
+.lossLog-table td.decompositionFactItems-document > div:has(a) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+    background: #FFD966;
+}
+
+.lossLog-table td.deltaPlan > div:not(:has(p)),
+.lossLog-table td.deltaFact > div:not(:has(p)),
+.lossLog-table td.deltaPlan > div,
+.lossLog-table td.deltaFact > div,
+.lossLog-table td.decompositionPlanItems-deviation > div:not(:has(p)),
+.lossLog-table td.decompositionFactItems-deviation > div:not(:has(p)),
+.lossLog-table td.decompositionPlanItems-document > div:has(a),
+.lossLog-table td.decompositionFactItems-document > div:has(a) {
+    background: none;
+}
+
+.lossLog-table td.decompositionPlanItems-document > div:has(a),
+.lossLog-table td.decompositionFactItems-document > div:has(a) {
+    padding: 6px 10px 8px;
+}
+
+.tm-width-1-7 {
+    width: 14.2857%;
+}
+
+.idText {
+    text-align: center;
+    font-size: 11pt;
+    display: block;
+    padding-bottom: 10px;
+}
+
+.decompositionPlanItems-planActions .tr-actions,
+.decompositionFactItems-factActions .tr-actions,
+.lossLog-table tbody td.actions .tr-actions {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.decompositionPlanItems-planActions .tr-actions .tr-action,
+.decompositionFactItems-factActions .tr-actions .tr-action,
+.lossLog-table tbody td.actions .tr-actions .tr-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lossLog-table thead th {
+    z-index: 21;
+}
+
+.lossLog-table .sticky-column,
+.lossLog-table tbody > tr > td.actions,
+.lossLog-table tbody > tr > td.date {
+    position: sticky;
+    left: 0;
+    background-color: #e9eceb;
+    z-index: 22;
+}
+
+.lossLog-table tbody > tr > td.actions::after,
+.lossLog-table tbody > tr > td.date::after {
+    position: absolute;
+    content: '';
+    z-index: -1;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border: 1px solid #aaa;
+}
+
+.lossLog-table tbody > tr > td.actions,
+.lossLog-table tbody > tr > td.date {
+    z-index: 20;
+}
+
+.sticky-column + .sticky-column,
+.lossLog-table tbody > tr > td.date {
+    left: 97px;
+}
+
+.sticky-column.date > div {
+    width: 70px;
+}
+
+#app .date-filter:hover {
+    background-color: transparent !important;
+    color: var(--white) !important;
+}
+
+#app .date-filter > div.tm-input-box {
+    display: flex;
+    align-items: center;
+}
+
+#app .date-filter > div.tm-input-box label {
+    margin-right: 10px;
+}
+
+.tm-textarea {
+    max-height: 200px;
+    height: 200px;
+}
+
+.lossLog-table-icon {
+    width: 16px;
+    height: 16px;
+    fill: #019570;
+    vertical-align: middle;
+    margin-left: 4px;
+}

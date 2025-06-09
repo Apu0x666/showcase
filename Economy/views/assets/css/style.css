@@ -1,0 +1,25 @@
+#error-text {
+  color: #cf0f0f;
+  font-size: 19px;
+  margin-top: 10px;
+}
+
+.lossLog-table .blue {
+  background-color: #ccffff;
+}
+
+.lossLog-table .green {
+  background-color: #ccffcc;
+}
+
+.lossLog-table {
+  text-align: center;
+}
+
+.lossLog-table .min-w-75 {
+  min-width: 75px;
+}
+
+.lossLog-table > table > thead > tr > th[class^="product"] {
+  min-width: 110px;
+}

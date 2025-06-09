@@ -1,0 +1,270 @@
+<template>
+    <tm-modal v-if="visible" @close="exitModal()">
+        <template v-slot:header>
+            <div>
+                <slot name="header">{{ title }}</slot>
+            </div>
+        </template>
+        <template v-slot:body>
+            <div style="width: 650px">
+                <slot name="body">
+                    <div class="tm-grid">
+                        <div class="tm-width-1-1">
+                            <select-model-single
+                                title="Наименование Компании/участка"
+                                id="licensedArea"
+                                model="LossLog_Dictionaries_LicensedAreas_Model"
+                                v-model="itemData.licensedAreaId"
+                            ></select-model-single>
+                        </div>
+                        
+                        <div class="tm-grid" v-if="itemData.products && Object.keys(itemData.products).length">
+                            <div v-for="([key, product]) in Object.entries(itemData.products)"
+                                 :key="key" class="tm-width-1-4">
+                                <tm-input-text
+                                    :title="product.title"
+                                    :id="'id' + key"
+                                    v-model="itemData.products[key].value"
+                                ></tm-input-text>
+                            </div>
+                        </div>
+                        
+                        <div class="tm-width-1-1">
+                            <select-model-single
+                                title="Ответственный за учет потерь эксплуатационной дирекции/департамента"
+                                id="user"
+                                model="User_WithPosition"
+                                v-model="itemData.responsible"
+                            ></select-model-single>
+                        </div>
+                        
+                        <div class="tm-width-1-2">
+                            <tm-datepicker title="Дата от"
+                                v-model="itemData.dateStart"
+                                lang="ru"
+                                type="date"
+                                value-type="format"
+                                format="DD.MM.YYYY">
+                            </tm-datepicker>
+                        </div>
+                        
+                        <div class="tm-width-1-2">
+                            <tm-datepicker title="Дата до"
+                                v-model="itemData.dateEnd"
+                                lang="ru"
+                                type="date"
+                                value-type="format"
+                                format="DD.MM.YYYY">
+                            </tm-datepicker>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+        </template>
+        <template v-slot:footer>
+            <div class="tm-flex tm-flex-right">
+                <slot name="footer">
+
+                    <button
+                        class="tm-btn tm-margin-horz"
+                        v-if="permissions.edit"
+                        v-show="this.isNew"
+                        @click="save">Добавить запись
+                    </button>
+
+                    <button
+                        class="tm-btn tm-margin-horz"
+                        v-if="permissions.edit"
+                        v-show="!this.isNew"
+                        @click="save">Сохранить
+                    </button>
+
+                    <button class="tm-btn" @click="exitModal()">Отмена</button>
+                </slot>
+            </div>
+        </template>
+    </tm-modal>
+</template>
+
+<script>
+export default {
+    emits: ['saved'],
+    props: {
+        permissions: {
+            type: Object,
+            default: () => {
+                return {
+                    canWrite: false,
+                    delete: false,
+                };
+            },
+        },
+        products: {
+            type: Object,
+            default: () => {
+                return {};
+            },
+        },
+    },
+    data() {
+        return {
+            moduleName: 'LossLog_Economy',
+            itemData: {
+                id: null,
+                licensedAreaId: null,
+                responsible: null,
+                products: {},
+                dateStart: '',
+                dateEnd: '',
+            },
+
+            visible: false,
+            title: '',
+
+            isNew: true,
+
+            actionCreate: 'create',
+            actionEdit: 'edit',
+            actionLoadItem: 'getRecord',
+            actionDeleteData: 'delete',
+
+            techProcess: [],
+            licensedAreaList: {},
+
+            action: '',
+        };
+    },
+    computed: {
+        processedProducts() {
+            // Преобразуем данные из пропсов в нужный формат
+            return Array.isArray(this.products)
+                ? this.products.reduce((acc, product) => {
+                    acc[product.id] = {
+                        title: product.productName,
+                        value: '0.00000', // Значение по умолчанию
+                    };
+                    return acc;
+                }, {})
+                : {}; // Если не массив, возвращаем пустой объект
+        },
+    },
+    methods: {
+        //Модалка на создание новой записи
+        newItem() {
+            this.title = 'Новая запись';
+            this.action = this.actionCreate;
+            this.buttonText = 'Добавить запись';
+            this.isNew = true;
+            this.visible = true;
+        },
+        //Модалка на редактирование записи
+        //используется та же что и на создание новой, но с подгрузом и заменой кнопки
+        editItem(itemId) {
+            this.title = 'Редактирование записи';
+            this.action = this.actionEdit;
+            this.isNew = false;
+            this.loadItem(itemId);
+
+            this.visible = true;
+        },
+        //Загрузить данные записи
+        async loadItem(item) {
+            BaseTemplate.showProgress();
+            let url = '/index.php?module=' + this.moduleName + '&action=' + this.actionLoadItem;
+
+            try {
+                let response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: item,
+                    })
+                });
+                let data = await response.json();
+                if (response.ok) {
+                    this.itemData = data;
+                } else {
+                    Notify.showError(data.errorMessage);
+                }
+            } catch (e) {
+                Notify.showError(e.message);
+            }
+            BaseTemplate.hideProgress();
+        },
+        // Сохранение редактируемого/создаваемого элемента
+        async save() {
+            BaseTemplate.showProgress();
+            const url = `/index.php?module=${this.moduleName}&action=${this.action}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(this.itemData),
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    Notify.showError(data.errorMessage || 'Произошла ошибка сохранения.');
+                    return;
+                }
+                
+                Notify.showSuccess(data.statusText);
+                this.$emit('saved', this.itemData);
+                this.exitModal();
+            } catch (e) {
+                Notify.showError(e.message);
+            } finally {
+                BaseTemplate.hideProgress();
+            }
+        },
+        deleteItem(id) {
+            let self = this;
+            Notify.confirmWarning('Вы действительно хотите удалить запись №: ' + id+ ' ?', function (state) {
+                if (!state) {
+                    return false;
+                }
+                let url = '/index.php?module=' + self.moduleName + '&action=' + self.actionDeleteData;
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id,
+                    }),
+                }).then(response => response.json()).then(data => {
+                    if (data.error) {
+                        Notify.showError(data.error);
+                    }
+                    else {
+                        Notify.showSuccess(data.statusText);
+                        self.$emit('saved', this.itemData);
+                    }
+                });
+            });
+        },
+        // Закрыть модалку
+        exitModal() {
+            this.clearData();
+            this.visible = false;
+            this.action = '';
+            this.title = '';
+        },
+        // Очистка модалки
+        clearData() {
+            this.itemData = {
+                id: null,
+                licensedAreaId: null,
+                products: {},
+                responsible: null,
+                dateStart: '',
+                dateEnd: '',
+            };
+        },
+       
+    },
+    mounted() {
+        this.itemData.products = this.processedProducts;
+    },
+    updated() {
+        this.itemData.products = this.processedProducts;
+    },
+};
+</script>
